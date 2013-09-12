@@ -1,0 +1,12 @@
+{
+  "name": "ledstripeJS",
+  "description": "LED stripes for Node JS",
+  "version": "0.0.1",
+  "author": "Alexander Lorz <bigalex@gmx.de>",
+  "private": true,
+  "dependencies": {
+    "microtime": "0.4.0",
+    "nanotimer": "0.2.4",
+    "pngparse": "2.0.1"
+  }
+}
