@@ -21,16 +21,15 @@ for (var i=0; i<blackBuffer.length; i++){
 
 
 
-function displayPNG(){
-	//pngparse.parseFile(path.join(imgDir, "rainbowsparkle.png"), function(err, data) {
-		pngparse.parseFile(path.join(imgDir, "terminate.png"), function(err, data) {
- 	 	if(err)
-    		throw err
+function displayPNG(filename, onFinish){
+			pngparse.parseFile(path.join(imgDir, filename), function(err, data) {
+ 	 	    if(err)
+    		  throw err
   		console.log(data); 
   		console.log('writing to device');
+      //append 1 black row
   		var imgBuffer = Buffer.concat([data.data, blackBuffer]);
-  //append 1 black row
-  		myLedStripe.writeFrame(imgBuffer,'10m');
+   		myLedStripe.writeFrame(imgBuffer,'10m', onFinish);
 	});
 	return;
 }
@@ -42,7 +41,11 @@ console.log("Fooooo");
 myLedStripe.connect( function(){
 	console.log("Baaaaaz");
   //callback when connected
-  displayPNG();
+  displayPNG("rainbowsparkle.png",function(){
+    displayPNG("johnsbild.png",function(){
+      displayPNG("terminate.png")
+    });
+  });
 
 })
 
