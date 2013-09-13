@@ -1,0 +1,6 @@
+#ignore editor backup files
+*~
+
+#ignore node-modules folder
+node_modules/
+
