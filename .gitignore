@@ -4,3 +4,8 @@
 #ignore node-modules folder
 node_modules/
 
+#private docku stuff (to messy for public release)
+dokusnippets.txt
+
+#code from LightScytheJS that was the starting point for this
+LightScytheJS/
