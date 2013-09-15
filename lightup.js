@@ -13,13 +13,6 @@ for (var i=0; i<blackBuffer.length; i++){
 };
 
 
-//myLedStripe.doOutput();
-
-//PARSE DIRECTLY FROM resized and aligned png file
-
-
-
-
 
 function displayPNG(filename, onFinish){
 			pngparse.parseFile(path.join(imgDir, filename), function(err, data) {
@@ -29,7 +22,7 @@ function displayPNG(filename, onFinish){
   		console.log('writing to device');
       //append 1 black row
   		var imgBuffer = Buffer.concat([data.data, blackBuffer]);
-   		myLedStripe.writeFrame(imgBuffer,'25m', onFinish);
+   		myLedStripe.animate(imgBuffer,'25m', onFinish);
 	});
 	return;
 }
@@ -41,9 +34,18 @@ process.on( 'SIGINT', function() {
   process.exit( )
 })
 
-//connect to the server
-console.log("Fooooo");
 
+
+function fillRed(){
+  displayPNG("terminate.png");
+  setTimeout(fillBlue, 100);
+}
+
+function fillBlue(){
+  displayPNG("rainbowsparkle.png");
+  //myLedStripe.fill(0x00,0x00,0x00);
+  //setTimeout(fillRed, 20);
+}
 
 myLedStripe.connect();
 //myLedStripe.connect( function(){
@@ -55,7 +57,9 @@ myLedStripe.connect();
   //   });
   // });
 
-  displayPNG("vollathq.png")
+  //displayPNG("farben.png")
+  myLedStripe.fill(0xFF,0x00,0x00);
+  fillRed();
 
 //})
 
