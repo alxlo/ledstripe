@@ -29,7 +29,7 @@ function displayPNG(filename, onFinish){
   		console.log('writing to device');
       //append 1 black row
   		var imgBuffer = Buffer.concat([data.data, blackBuffer]);
-   		myLedStripe.writeFrame(imgBuffer,'10m', onFinish);
+   		myLedStripe.writeFrame(imgBuffer,'25m', onFinish);
 	});
 	return;
 }
@@ -49,11 +49,13 @@ myLedStripe.connect();
 //myLedStripe.connect( function(){
 	console.log("Baaaaaz");
   //callback when connected
-  displayPNG("rainbowsparkle.png",function(){
-    displayPNG("johnsbild.png",function(){
-      displayPNG("terminate.png")
-    });
-  });
+  // displayPNG("rainbowsparkle.png",function(){
+  //   displayPNG("johnsbild.png",function(){
+  //     displayPNG("terminate.png")
+  //   });
+  // });
+
+  displayPNG("vollathq.png")
 
 //})
 

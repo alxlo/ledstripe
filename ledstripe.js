@@ -76,8 +76,42 @@ LedStripe.prototype = {
     	if (this.spiFd) fs.closeSync(this.spiFd);
     },
 
+
+    sendRgbBuf : function(buffer){
+    	var bufSize = this.numLEDs * this.bytePerPixel;
+    	if (buffer.length != bufSize) {
+    		console.log ("buffer length (" + buffer.lenght +" byte) does not match LED stripe size ("+
+    			         this.numLEDs + " LEDs x " + this.bytePerPixel + " colors)");
+    		return;
+    	} // end if (buffer.length != bufSize)
+    	if (this.spiFd) {
+    		var numLeadingZeros = Math.ceil(this.numLEDs / 32); //number of zeros to "reset" LPD8806 stripe
+    		// mind the last zero byte for latching the last blue LED
+    		var aBuf = new Buffer (numLeadingZeros + bufSize + 1);
+    		// prime the stripe with zeros
+    		for (var i=0; i<numLeadingZeros; i++){
+    			aBuf[i] =0x00;
+    		};
+    		// transform color values
+    		for (var i=0; i<(bufSize); i+=3){
+		     	var r = (buffer[i+0]>>1)+0x80;
+		     	var g = (buffer[i+1]>>1)+0x80;
+		     	var b = (buffer[i+2]>>1)+0x80;
+			 	aBuf[i+numLeadingZeros+0]=g;
+			 	aBuf[i+numLeadingZeros+1]=r;
+			 	aBuf[i+numLeadingZeros+2]=b;
+			};
+			// trailing zero
+			aBuf[bufSize+numLeadingZeros] = 0x00;
+			fs.writeSync(this.spiFd, aBuf, 0, aBuf.length, null);
+    	} //end if (this.spiFd)
+    }, // end sendRgbBuf
+
 	writeRow : function(row, buffer){
-		var readPos = row * this.numLEDs * this.bytePerPixel; //start position of current row in buffer
+		// var readPos = row * this.numLEDs * this.bytePerPixel; //start position of current row in buffer
+		this.sendRgbBuf(buffer.slice(row * this.numLEDs * this.bytePerPixel, (row+1) * this.numLEDs * this.bytePerPixel));
+		
+/*
 		var aBuf = new Buffer ((this.numLEDs +2) * this.bytePerPixel);
 		//buffer.copy(aBuf,this.numLEDs, row*this.numLEDs*this.bytePerPixel, (row+1)*this.numLEDs*this.bytePerPixel);
 		console.log("write row "+row+" for "+this.numLEDs+" LEDs");
@@ -108,7 +142,7 @@ LedStripe.prototype = {
 		console.log('bufle ' + aBuf.length);
 		console.log('fd ' + this.spiFd);
 		fs.writeSync(this.spiFd, aBuf, 0, aBuf.length, null);
-	    
+*/	    
 	}, //end writeRow
 
 
