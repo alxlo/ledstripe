@@ -34,11 +34,19 @@ function displayPNG(filename, onFinish){
 	return;
 }
 
-
+process.on( 'SIGINT', function() {
+  console.log( "\ngracefully shutting down from  SIGINT (Crtl-C)" )
+  // close conection to SPI
+  myLedStripe.disconnect();
+  process.exit( )
+})
 
 //connect to the server
 console.log("Fooooo");
-myLedStripe.connect( function(){
+
+
+myLedStripe.connect();
+//myLedStripe.connect( function(){
 	console.log("Baaaaaz");
   //callback when connected
   displayPNG("rainbowsparkle.png",function(){
@@ -47,7 +55,7 @@ myLedStripe.connect( function(){
     });
   });
 
-})
+//})
 
 
 

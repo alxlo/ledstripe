@@ -6,11 +6,12 @@ var net = require('net');
 
 
 function LedStripe(){
-	this.client = null;
-	this.HOST = '172.22.99.206';
-    this.PORT = 11177;
+	//this.client = null;
+	//this.HOST = '172.22.99.206';
+    //this.PORT = 11177;
     this.spiDevice = '/dev/spidev0.0';
 	this.numLEDs = 30;
+	this.spiFd = null; //filedescriptor for spidevice
 	this.bytePerPixel = 3; //RGB
 	this.rowResetTime = 1000; // number of us CLK has to be pulled low (=no writes) for frame reset
     						 // manual of WS2801 says 500 is enough, however we need at least 1000
@@ -21,7 +22,7 @@ LedStripe.prototype = {
 
 
 
-
+/*
     doOutput : function(row){
     	
     	// Write a message to the socket as soon as the client is connected, the server will receive it as message from the client 
@@ -34,10 +35,10 @@ LedStripe.prototype = {
 		console.log("promt");
 		return;
     },	// end doOutput		
-
+*/
 
     connect: function(callback){
-		this.client = new net.Socket();
+		/*this.client = new net.Socket();
 		console.log("trying to connect to "+this.HOST+":"+this.PORT);
 		this.client.connect(this.PORT, this.HOST, function(){
 			console.log("connected");
@@ -45,13 +46,39 @@ LedStripe.prototype = {
 		});
 		this.client.on('close', function() {
     		console.log('Connection closed');
-		});
-	   	//if (callback) callback();
+		});*/
+		if (callback){
+			//connect asynchronously
+			console.log("sync open " + this.spiDevice);
+			fs.open(this.spiDevice, 'w', function(err,fd){
+				if (err){
+					console.error("error opening SPI device "+this.spiDevice, err);	
+				} else {
+					console.log("got filedescriptor for SPI: " +  fd);
+					this.spiFd = fd;
+				}
+
+			}.bind(this)); //end open
+			callback();	
+
+		} else {
+			//connect synchronously
+			try{
+				this.spiFd = fs.openSync(this.spiDevice, 'w');
+			} catch (err) {
+				console.error("error opening SPI device "+this.spiDevice, err);
+			}
+		} 
+	   	
+    },
+
+    disconnect : function(){
+    	if (this.spiFd) fs.closeSync(this.spiFd);
     },
 
 	writeRow : function(row, buffer){
-		var readPos = row*this.numLEDs*this.bytePerPixel; //start position of corrent row in buffer
-		var aBuf = new Buffer ((this.numLEDs +2) *this.bytePerPixel);
+		var readPos = row * this.numLEDs * this.bytePerPixel; //start position of current row in buffer
+		var aBuf = new Buffer ((this.numLEDs +2) * this.bytePerPixel);
 		//buffer.copy(aBuf,this.numLEDs, row*this.numLEDs*this.bytePerPixel, (row+1)*this.numLEDs*this.bytePerPixel);
 		console.log("write row "+row+" for "+this.numLEDs+" LEDs");
 		aBuf[0] = 0x00;
@@ -76,9 +103,11 @@ LedStripe.prototype = {
 	    aBuf[this.numLEDs*this.bytePerPixel+4] = 0x00;
 	    aBuf[this.numLEDs*this.bytePerPixel+5] = 0x00;
 		//fs.writeSync(fd, buffer, row*numLEDs*bytePerPixel, numLEDs*bytePerPixel, null);
-		console.log(aBuf);
-		this.client.write(aBuf);
-
+		//console.log(aBuf);
+		//this.client.write(aBuf);
+		console.log('bufle ' + aBuf.length);
+		console.log('fd ' + this.spiFd);
+		fs.writeSync(this.spiFd, aBuf, 0, aBuf.length, null);
 	    
 	}, //end writeRow
 
