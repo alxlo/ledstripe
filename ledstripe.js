@@ -78,7 +78,7 @@ LedStripe.prototype = {
 			aBuf[bufSize+numLeadingZeros] = 0x00;
 			fs.writeSync(this.spiFd, aBuf, 0, aBuf.length, null);
     	} //end if (this.spiFd)
-    }, // end sendRgbBuf
+    }, // end sendRgbBufLDP8806
 
 	sendRgbBufWS2801 : function(buffer){
 		// checking if enough time passed for resetting stripe
@@ -109,6 +109,10 @@ LedStripe.prototype = {
 	animate : function(buffer,frameDelay, callback){
 	  var row = 0;
 	  var rows = buffer.length/(this.numLEDs*this.bytePerPixel);
+	  if (rows != Math.ceil(rows)) {
+	  	console.log("buffer size is not a multiple of frame size");
+	  	return false;
+	  }
 	  var myTimer = new nanotimer();
 	  console.log("Writing " + rows + "rows for "+this.numLEDs+" LEDs");
 	  myTimer.setInterval(function(){
