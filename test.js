@@ -92,7 +92,6 @@ function displayPNG(filename, onFinish){
 }
 */
 
-
 } else {
   console.log( "\nUsage:\tnode test <number of LEDs> <stripe type> <SPI device>\n\n"
               +"where \t<number of LEDs> is an integer > 0 and\n"
@@ -101,7 +100,3 @@ function displayPNG(filename, onFinish){
               +"e.g. \t node test 32 WS2801 /dev/spidev0.0\n\n"
               )
 }
-
-
-
-
