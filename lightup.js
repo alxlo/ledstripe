@@ -6,8 +6,9 @@ var myLedStripe = require('./ledstripe');
 
 var imgDir = __dirname + '/img';
 
+var numLEDs = 30;
 
-var blackBuffer = new Buffer(myLedStripe.numLEDs*myLedStripe.bytePerPixel);
+var blackBuffer = new Buffer(numLEDs*3);
 for (var i=0; i<blackBuffer.length; i++){
   blackBuffer[i]=0;
 };
@@ -22,7 +23,7 @@ function displayPNG(filename, onFinish){
   		console.log('writing to device');
       //append 1 black row
   		var imgBuffer = Buffer.concat([data.data, blackBuffer]);
-   		myLedStripe.animate(imgBuffer,'25m', onFinish);
+   		myLedStripe.animate(imgBuffer,'10m', onFinish);
 	});
 	return;
 }
@@ -37,19 +38,33 @@ process.on( 'SIGINT', function() {
 
 
 function fillRed(){
-  displayPNG("terminate.png");
-  setTimeout(fillBlue, 100);
+  myLedStripe.fill(0x80,0x00,0x00);
+  //displayPNG("terminate.png");
+  setTimeout(fillBlack1, 2);
 }
+
+function fillBlack1(){
+  myLedStripe.fill(0x00,0x00,0x00);
+  //displayPNG("terminate.png");
+  setTimeout(fillBlue, 80);
+}
+
+function fillBlack2(){
+  myLedStripe.fill(0x00,0x00,0x00);
+  //displayPNG("terminate.png");
+  setTimeout(fillRed, 80);
+}
+
 
 function fillBlue(){
-  displayPNG("rainbowsparkle.png");
-  //myLedStripe.fill(0x00,0x00,0x00);
-  //setTimeout(fillRed, 20);
+  //displayPNG("rainbowsparkle.png");
+  myLedStripe.fill(0x00,0x00,0xFF);
+  setTimeout(fillBlack2, 2);
 }
 
-myLedStripe.connect();
+myLedStripe.connect(64,'WS2801','/dev/spidev0.0');
 //myLedStripe.connect( function(){
-	console.log("Baaaaaz");
+
   //callback when connected
   // displayPNG("rainbowsparkle.png",function(){
   //   displayPNG("johnsbild.png",function(){
@@ -58,9 +73,9 @@ myLedStripe.connect();
   // });
 
   //displayPNG("farben.png")
-  myLedStripe.fill(0xFF,0x00,0x00);
-  fillRed();
-
+  //myLedStripe.fill(0x00,0xFF,0x00);
+  //fillBlue();
+  myLedStripe.fill(0x00,0x80,0x80);
 //})
 
 

@@ -5,11 +5,14 @@ var nanotimer = require('nanotimer');
 
 function LedStripe(){
     this.spiDevice = '/dev/spidev0.0';
-	this.numLEDs = 30;
+	this.numLEDs = 23;
 	this.spiFd = null; //filedescriptor for spidevice
 	this.bytePerPixel = 3; //RGB
 	this.rowResetTime = 1000; // number of us CLK has to be pulled low (=no writes) for frame reset
     						  // manual of WS2801 says 500 is enough, however we need at least 1000
+    this.lastWriteTime = microtime.now()-this.rowResetTime-1; //last time something was written to SPI
+    														  //required for save WS2801 reset
+	this.sendRgbBuf = null; //function for writing to stripe, depends on stripe type    														  
 
 }
 
@@ -18,28 +21,26 @@ LedStripe.prototype = {
 	/*
 	 * connect to SPI port
 	 */
-    connect: function(callback){
-		if (callback){
-			//connect asynchronously
-			console.log("sync open " + this.spiDevice);
-			fs.open(this.spiDevice, 'w', function(err,fd){
-				if (err){
-					console.error("error opening SPI device "+this.spiDevice, err);	
-				} else {
-					console.log("got filedescriptor for SPI: " +  fd);
-					this.spiFd = fd;
-				}
-
-			}.bind(this)); //end open
-			callback();	
-		} else {
-			//connect synchronously
-			try{
-				this.spiFd = fs.openSync(this.spiDevice, 'w');
-			} catch (err) {
-				console.error("error opening SPI device "+this.spiDevice, err);
-			}
-		} 
+    connect: function(numLEDs,stripeType,spiDevice){
+    	// sanity check for params
+    	if ((numLEDs !== parseInt(numLEDs)) || (numLEDs<1)) {
+    		console.error("invalid param for number of LEDs, plz use integer >0");
+    		return false;
+    	}
+    	if ((stripeType != 'WS2801') && (stripeType != 'LPD8806')){
+    		console.error("invalid param for stripe type, only WS2801 and LPD8806 are suported");
+    		return false;
+    	}
+    	if (spiDevice) this.spiDevice = spiDevice;
+		// connect synchronously
+		try{
+			this.spiFd = fs.openSync(this.spiDevice, 'w');
+		} catch (err) {
+			console.error("error opening SPI device "+this.spiDevice, err);
+			return false;
+		}
+		this.sendRgbBuf = (stripeType == 'WS2801') ? this.sendRgbBufWS2801 : this.sendRgbBufLPD8806;
+		this.numLEDs = numLEDs;
     },
 
     /*
@@ -49,7 +50,7 @@ LedStripe.prototype = {
     	if (this.spiFd) fs.closeSync(this.spiFd);
     },
 
-    sendRgbBuf : function(buffer){
+    sendRgbBufLPD8806 : function(buffer){
     	var bufSize = this.numLEDs * this.bytePerPixel;
     	if (buffer.length != bufSize) {
     		console.log ("buffer length (" + buffer.lenght +" byte) does not match LED stripe size ("+
@@ -78,6 +79,19 @@ LedStripe.prototype = {
 			fs.writeSync(this.spiFd, aBuf, 0, aBuf.length, null);
     	} //end if (this.spiFd)
     }, // end sendRgbBuf
+
+	sendRgbBufWS2801 : function(buffer){
+		// checking if enough time passed for resetting stripe
+		if (microtime.now() > (this.lastWriteTime + this.rowResetTime)){
+			// yes, its o.k., lets write
+    		fs.writeSync(this.spiFd, buffer, 0, buffer.length, null);
+    		this.lastWriteTime = microtime.now();
+    		return true;
+  		}
+  		console.log('writing to fast, data dropped');
+  		return false;	
+	},
+
 
     fill : function(r,g,b){
     	if (this.spiFd) {
