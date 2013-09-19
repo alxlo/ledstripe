@@ -20,4 +20,13 @@ spi-bcm2708
 ```
 to `/etc/modules`
 
-* Make your SPI device accessible for the user running the node script
+* Make your SPI device accessible for the user running the node script. If you want the user `pi` to be able to use the device, setup groups and permissions:
+```
+sudo groupadd -f --system spi
+sudo adduser tk spi # user tk will access SPI
+```
+and create (or edit) an udev rule. The file `/etc/udev/rules.d/90-spi.rules` should contain the line
+```
+SUBSYSTEM=="spidev", GROUP="spi"
+```
+Reboot for the changes to take effect.
