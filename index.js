@@ -125,7 +125,7 @@ LedStripe.prototype = {
 	  	return false;
 	  }
 	  var myTimer = new nanotimer();
-	  console.log("Writing " + rows + "rows for "+this.numLEDs+" LEDs");
+	  console.log("Writing " + rows + " rows for " + this.numLEDs + " LEDs with delay " + frameDelay);
 	  myTimer.setInterval(function(){
 	    if (row>=rows){
 	      myTimer.clearInterval();
@@ -135,7 +135,7 @@ LedStripe.prototype = {
 	    	this.sendRgbBuf(buffer.slice(row * this.numLEDs * this.bytePerPixel, (row + 1) * this.numLEDs * this.bytePerPixel));	
 			row++;
 	    }
-	    }.bind(this), frameDelay, function(err) {
+	    }.bind(this), null, frameDelay, function(err) {
 	      if(err) {
 	         //error
 	      }

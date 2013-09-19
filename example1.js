@@ -2,11 +2,6 @@
  * some example code for testing your led stripe
  */
 
-//var fs = require('fs');
-//var path = require("path");
-//var pngparse = require("pngparse");
-
-
 var myLedStripe = require('./index');
 var myArgs = process.argv.slice(2);
 
@@ -70,27 +65,6 @@ if ((myArgs.length == 3) &&
           angle+=animationTick;
         },5);
     }; // end doFancyColors
-
-
-/*
-var blackBuffer = new Buffer(numLEDs*3);
-for (var i=0; i<blackBuffer.length; i++){
-  blackBuffer[i]=0;
-};
-
-function displayPNG(filename, onFinish){
-			pngparse.parseFile(path.join(imgDir, filename), function(err, data) {
- 	 	    if(err)
-    		  throw err
-  		console.log(data); 
-  		console.log('writing to device');
-      //append 1 black row
-  		var imgBuffer = Buffer.concat([data.data, blackBuffer]);
-   		myLedStripe.animate(imgBuffer,'10m', onFinish);
-	});
-	return;
-}
-*/
 
 } else {
   console.log( "\nUsage:\tnode example1 <number of LEDs> <stripe type> <SPI device>\n\n"
