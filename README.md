@@ -31,3 +31,6 @@ and create (or edit) an udev rule. The file `/etc/udev/rules.d/90-spi.rules` sho
 SUBSYSTEM=="spidev", GROUP="spi"
 ```
 Reboot for the changes to take effect.
+
+
+[![endorse](https://api.coderwall.com/alxlo/endorsecount.png)](https://coderwall.com/alxlo)
