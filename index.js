@@ -1,7 +1,6 @@
-var fs = require('fs');
-var path = require("path");
-var microtime = require('microtime');
-var nanotimer = require('nanotimer');
+var fs = require('fs'),
+	microtime = require('microtime'),
+	nanotimer = require('nanotimer')
 
 function LedStripe(){
     this.spiDevice = '/dev/spidev0.0';
@@ -78,8 +77,11 @@ LedStripe.prototype = {
 			aBuf[bufSize+numLeadingZeros] = 0x00;
 			fs.writeSync(this.spiFd, aBuf, 0, aBuf.length, null);
     	} //end if (this.spiFd)
-    }, // end sendRgbBufLDP8806
+    }, // end sendRgbBufLPD8806
 
+    /*
+     * send buffer with RGB values to LPD 8806 stripe
+	 */
 	sendRgbBufWS2801 : function(buffer){
 		// checking if enough time passed for resetting stripe
 		if (microtime.now() > (this.lastWriteTime + this.rowResetTime)){
@@ -90,9 +92,12 @@ LedStripe.prototype = {
   		}
   		console.log('writing to fast, data dropped');
   		return false;	
-	},
+	}, // end sendRgbBufWS2801
 
 
+	/*
+	 * fill whole stripe with one color
+	 */
     fill : function(r,g,b){
     	if (this.spiFd) {
 	    	var bufSize = this.numLEDs * this.bytePerPixel;
@@ -106,6 +111,12 @@ LedStripe.prototype = {
 		}    	
     }, //end fill
 
+    /*
+     * play an animation from RGB buffer 
+     * - buffersize must be a multiple of one frame
+     * - delay between frames is given in microtimers format,
+     *   e.g. 10m for 10 milliseconds 
+     */
 	animate : function(buffer,frameDelay, callback){
 	  var row = 0;
 	  var rows = buffer.length/(this.numLEDs*this.bytePerPixel);
@@ -129,7 +140,7 @@ LedStripe.prototype = {
 	         //error
 	      }
 	  });
-	} //end writeFrame
+	} //end animate
 }
 
 module.exports = new LedStripe();

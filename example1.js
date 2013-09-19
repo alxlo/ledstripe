@@ -7,7 +7,7 @@
 //var pngparse = require("pngparse");
 
 
-var myLedStripe = require('./ledstripe');
+var myLedStripe = require('./index');
 var myArgs = process.argv.slice(2);
 
 // sanity check for arguments
@@ -93,10 +93,10 @@ function displayPNG(filename, onFinish){
 */
 
 } else {
-  console.log( "\nUsage:\tnode test <number of LEDs> <stripe type> <SPI device>\n\n"
+  console.log( "\nUsage:\tnode example1 <number of LEDs> <stripe type> <SPI device>\n\n"
               +"where \t<number of LEDs> is an integer > 0 and\n"
               +"\t<stripe type> is either WS2801 or LPD8806\n"
               +"\t<SPI device> is your SPI device\n\n"
-              +"e.g. \t node test 32 WS2801 /dev/spidev0.0\n\n"
+              +"e.g. \t node example1 32 WS2801 /dev/spidev0.0\n\n"
               )
 }

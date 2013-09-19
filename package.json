@@ -1,12 +1,27 @@
 {
-  "name": "ledstripeJS",
-  "description": "LED stripes for Node JS",
+  "name": "ledstripe",
+  "description": "control WS2801 and LPD8806 LED stripes via SPI",
+  "keywords" : [
+    "SPI",
+    "LED",
+    "LED strip",
+    "LED stripe",
+    "WS2801",
+    "LPD8806"
+  ],
   "version": "0.0.1",
   "author": "Alexander Lorz <bigalex@gmx.de>",
-  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alxlo/ledstripeJS"
+  },
+  "main": "./index",
   "dependencies": {
-    "microtime": "0.4.0",
-    "nanotimer": "0.2.4",
+    "microtime": "0.4.x",
+    "nanotimer": "0.2.x"
+  },
+  "devDependencies": {
     "pngparse": "2.0.1"
-  }
+  },
+  "license": "MIT"
 }
