@@ -1,7 +1,7 @@
-ledstripeJS
+ledstripe
 ===========
 
-Node JS code for LED stripes
+Node.js code for controllig WS2801 and LPD8806 LED stripes via SPI.
 
 
 Background Information
