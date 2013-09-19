@@ -18,12 +18,12 @@ Can't access your SPI device?
 ```
 spi-bcm2708
 ```
-to `/etc/modules`
+to `/etc/modules` to load it permanently on boot. If you dont want to load the module on every time you boot the system, load it temporarily with `sudo modprobe spi-bcm2708`.
 
 * Make your SPI device accessible for the user running the node script. If you want the user `pi` to be able to use the device, setup groups and permissions:
 ```
 sudo groupadd -f --system spi
-sudo adduser tk spi # user tk will access SPI
+sudo adduser pi spi
 ```
 and create (or edit) an udev rule. The file `/etc/udev/rules.d/90-spi.rules` should contain the line
 ```
