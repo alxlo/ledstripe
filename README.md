@@ -15,9 +15,9 @@ Can't access your SPI device?
 -----------------------------
 
 * Make sure your SPI kernel module is loaded. On the Raspberry Pi add a line
-´´´
+```
 spi-bcm2708
-´´´
-to /etc/modules
+```
+to `/etc/modules`
 
 * Make your SPI device accessible for the user running the node script
