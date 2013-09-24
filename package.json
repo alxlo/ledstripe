@@ -10,7 +10,7 @@
     "WS2801",
     "LPD8806"
   ],
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Alexander Lorz <bigalex@gmx.de>",
   "repository": {
     "type": "git",

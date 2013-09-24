@@ -8,7 +8,8 @@ var fs = require('fs'),
 
 var imgDir = __dirname + '/img',
     numLEDs = 30,
-    ledStripeType = 'LPD8806'
+    //ledStripeType = 'LPD8806'
+    ledStripeType = 'WS2801'
 
 var blackBuffer = new Buffer(numLEDs*3);
 for (var i=0; i<blackBuffer.length; i++){

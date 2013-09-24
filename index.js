@@ -6,6 +6,8 @@ function LedStripe(){
     this.spiDevice = '/dev/spidev0.0';
 	this.numLEDs = 23;
 	this.spiFd = null; //filedescriptor for spidevice
+	this.gamma = 2.5;
+	this.gammatable = new Array(256);
 	this.bytePerPixel = 3; //RGB
 	this.rowResetTime = 1000; // number of us CLK has to be pulled low (=no writes) for frame reset
     						  // manual of WS2801 says 500 is enough, however we need at least 1000
@@ -20,7 +22,7 @@ LedStripe.prototype = {
 	/*
 	 * connect to SPI port
 	 */
-    connect: function(numLEDs,stripeType,spiDevice){
+    connect: function(numLEDs,stripeType,spiDevice, gamma){
     	// sanity check for params
     	if ((numLEDs !== parseInt(numLEDs)) || (numLEDs<1)) {
     		console.error("invalid param for number of LEDs, plz use integer >0");
@@ -40,6 +42,11 @@ LedStripe.prototype = {
 		}
 		this.sendRgbBuf = (stripeType == 'WS2801') ? this.sendRgbBufWS2801 : this.sendRgbBufLPD8806;
 		this.numLEDs = numLEDs;
+		this.gamma = gamma ? gamma : 2.5; //set gamma correction value
+		// compute gamma correction table
+		for (var i=0; i<256; i++)
+			this.gammatable[i] = Math.round(255*Math.pow(i/255, this.gamma));
+		//console.log("gammatable" + this.gammatable);
     },
 
     /*
@@ -66,9 +73,9 @@ LedStripe.prototype = {
     		};
     		// transform color values
     		for (var i=0; i<(bufSize); i+=3){
-		     	var r = (buffer[i+0]>>1)+0x80;
-		     	var g = (buffer[i+1]>>1)+0x80;
-		     	var b = (buffer[i+2]>>1)+0x80;
+		     	var r = (this.gammatable[buffer[i+0]]>>1)+0x80;
+		     	var g = (this.gammatable[buffer[i+1]]>>1)+0x80;
+		     	var b = (this.gammatable[buffer[i+2]]>>1)+0x80;
 			 	aBuf[i+numLeadingZeros+0]=g;
 			 	aBuf[i+numLeadingZeros+1]=r;
 			 	aBuf[i+numLeadingZeros+2]=b;
@@ -86,7 +93,12 @@ LedStripe.prototype = {
 		// checking if enough time passed for resetting stripe
 		if (microtime.now() > (this.lastWriteTime + this.rowResetTime)){
 			// yes, its o.k., lets write
-    		fs.writeSync(this.spiFd, buffer, 0, buffer.length, null);
+			// but first do gamma correction
+			var adjustedBuffer = new Buffer(buffer.length);
+			for (var i=0; i < buffer.length; i++){
+				adjustedBuffer[i]=this.gammatable[buffer[i]];
+			}
+    		fs.writeSync(this.spiFd, adjustedBuffer, 0, buffer.length, null);
     		this.lastWriteTime = microtime.now();
     		return true;
   		}
