@@ -1,5 +1,6 @@
-ledstripe
-===========
+# ledstripe
+
+[![NPM](https://nodei.co/npm/ledstripe.png)](https://nodei.co/npm/ledstripe/)
 
 Node.js code for controllig WS2801 and LPD8806 LED stripes via SPI.
 
