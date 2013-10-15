@@ -1,14 +1,14 @@
 # ledstripe
 
-[![NPM](https://nodei.co/npm/ledstripe.png)](https://nodei.co/npm/ledstripe/)
+Control WS2801 and LPD8806 LED stripes with Node.js via SPI.
 
-Node.js code for controllig WS2801 and LPD8806 LED stripes via SPI.
+[![NPM](https://nodei.co/npm/ledstripe.png)](https://nodei.co/npm/ledstripe/)
 
 
 Background Information
 ----------------------
 
-* Overview on LED strips http://nut-bolt.nl/2012/rgb-led-strips/
+* Overview on LED stripes http://nut-bolt.nl/2012/rgb-led-strips/
 * The LPD8806 protocol explained https://github.com/adafruit/LPD8806/blob/master/LPD8806.cpp
 * WS2801 datasheet http://www.adafruit.com/datasheets/WS2801.pdf
 
