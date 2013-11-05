@@ -15,14 +15,14 @@ Background Information
 Can't access your SPI device?
 -----------------------------
 
-* Check if your kernel has SPI support at all.
+* Find out if your kernel has SPI support at all. Debian Wheezy should provide this as an out-of-the box feature. So with running Wheezy on a Raspberry Pi you should be fine. However, most of the very few distros for the Cubieboard might leave you out in the cold to bake your own kernel.
 * Make sure your SPI kernel module is loaded. On the Raspberry Pi add a line
 ```
 spi-bcm2708
 ```
 to `/etc/modules` to load it permanently on boot. If you dont want to load the module on every time you boot the system, load it temporarily with `sudo modprobe spi-bcm2708`.
-
-* Make your SPI device accessible for the user running the node script. If you want the user `pi` to be able to use the device, setup groups and permissions:
+* Finally there should exist something not entirely unlike `/dev/spidev0.0`.
+* Make your SPI device accessible for the user running the node script. This will save you the trouble of running your node script as root. If you want the user `pi` to be able to use the device, setup groups and permissions:
 ```
 sudo groupadd -f --system spi
 sudo adduser pi spi
