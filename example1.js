@@ -19,16 +19,18 @@ if ((myArgs.length == 3) &&
     // connecting to SPI
     myLedStripe.connect(numLEDs, myStripeType, mySpiDevice);
 
-    // disconnect on Ctrl-C (not necessary but we will play nice)
-    process.on( 'SIGINT', function() {
-      console.log( "\ngracefully shutting down from  SIGINT (Ctrl-C)" )
+    // graceful exit (not necessary but we will play nice)
+    function gracefulExit() {
+      console.log( "Exiting gracefully from ledstripe" )
       // switching all leds off 
       myLedStripe.fill(0x00, 0x00, 0x00);
       // close conection to SPI
       myLedStripe.disconnect();
       process.exit( )
-    })
+    }
 
+    // shutdown on CTRL-C and SIGTERM
+    process.on('SIGINT', gracefulExit).on('SIGTERM', gracefulExit) 
     
     // do some fancy stuff
     myLedStripe.fill(0xFF, 0x00, 0x00);
