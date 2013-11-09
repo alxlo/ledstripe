@@ -22,6 +22,8 @@ if ((myArgs.length == 3) &&
     // disconnect on Ctrl-C (not necessary but we will play nice)
     process.on( 'SIGINT', function() {
       console.log( "\ngracefully shutting down from  SIGINT (Ctrl-C)" )
+      // switching all leds off 
+      myLedStripe.fill(0x00, 0x00, 0x00);
       // close conection to SPI
       myLedStripe.disconnect();
       process.exit( )
