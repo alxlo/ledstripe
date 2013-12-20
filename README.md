@@ -23,14 +23,13 @@ spi-bcm2708
 to `/etc/modules` to load it permanently on boot. If you dont want to load the module on every time you boot the system, load it temporarily with `sudo modprobe spi-bcm2708`.
 * Finally there should exist something not entirely unlike `/dev/spidev0.0`.
 * Make your SPI device accessible for the user running the node script. This will save you the trouble of running your node script as root. If you want the user `pi` to be able to use the device, setup groups and permissions:
-```
-sudo groupadd -f --system spi
-sudo adduser pi spi
-```
+
+        sudo groupadd -f --system spi
+        sudo adduser pi spi
 and create (or edit) an udev rule. The file `/etc/udev/rules.d/90-spi.rules` should contain the line
-```
-SUBSYSTEM=="spidev", GROUP="spi"
-```
+
+        SUBSYSTEM=="spidev", GROUP="spi"
+
 Reboot for the changes to take effect.
 
 
