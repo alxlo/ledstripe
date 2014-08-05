@@ -104,8 +104,7 @@ connected.**
 
 On the Pi, just connect +5V to pin 2 on the GPIO header.
 The Cubieboard will require a minor modification to be powered from the extension pinheaders.
-Here you will have to short out (or replace with a wire) the protection diode D2 (see top left area on page 7 of the
-[[http://dl.cubieboard.org/software/ubuntuone/hw/cubieboard/a10_cubieboard_120808.pdf| schematics file]]). Do this at your own risk, voiding the sacred covenant you've entered into with the manufacturer.
+Here you will have to short out (or replace with a wire) the protection diode D2 (see top left area on page 7 of the [schematics file](http://dl.cubieboard.org/software/ubuntuone/hw/cubieboard/a10_cubieboard_120808.pdf). Do this at your own risk, voiding the sacred covenant you've entered into with the manufacturer.
 
 ![replacing D2 with a wire](https://github.com/alxlo/ledstripe/raw/master/docimg/replace_d2.jpg)
 
