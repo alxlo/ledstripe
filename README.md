@@ -63,6 +63,7 @@ connected the following way.
 <td>pin 6 (GROUND)</td>
 <td></td>
 </tr>
+</table>
 
 In general, **+5V is not connected** to your RPi/Cubie. For exceptions see
 the section 'Power Supply' below. Just connect GND, CLK and SD.
